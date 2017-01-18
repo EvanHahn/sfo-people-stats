@@ -4,11 +4,12 @@
     "build": "NODE_ENV=production gulp build",
     "development": "gulp development",
     "clean": "gulp clean",
-    "test": "standard"
+    "test": "standard --fix"
   },
   "devDependencies": {
     "browserify": "^13.3.0",
     "connect": "^3.5.0",
+    "csv-parse": "^1.1.9",
     "del": "^2.2.2",
     "gulp": "^3.9.1",
     "gulp-cli": "^1.2.2",

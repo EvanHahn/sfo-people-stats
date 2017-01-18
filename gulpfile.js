@@ -1,5 +1,6 @@
 const browserify = require('browserify')
 const buffer = require('vinyl-buffer')
+const buildData = require('./build-data')
 const connect = require('connect')
 const del = require('del')
 const gulp = require('gulp')
@@ -12,6 +13,10 @@ const uglify = require('gulp-uglify')
 
 const DIST_PATH = path.join(__dirname, 'dist')
 const JS_FILENAME = 'the.js'
+const JS_FILES = [
+  path.join(__dirname, 'package.json'),
+  path.join(__dirname, 'src', '**')
+]
 const JS_PATH = path.join(__dirname, 'src', JS_FILENAME)
 const STATIC_FILES = path.join(__dirname, 'static', '**')
 
@@ -47,6 +52,8 @@ gulp.task('build javascripts', ['create dist/'], (done) => {
   return bundle
 })
 
+gulp.task('build data', ['create dist/'], buildData)
+
 gulp.task('copy static files', ['create dist/'], () => {
   return gulp.src(STATIC_FILES)
     .pipe(gulp.dest(DIST_PATH))
@@ -57,11 +64,13 @@ gulp.task('start dev server', ['create dist/'], (done) => {
 })
 
 gulp.task('watch dev files', () => {
+  gulp.watch(JS_FILES, ['build javascripts'])
   gulp.watch(STATIC_FILES, ['copy static files'])
 })
 
 gulp.task('build', [
   'build javascripts',
+  'build data',
   'copy static files'
 ])
 
