@@ -1,7 +1,9 @@
 const parseCsv = require('csv-parse')
 const fs = require('fs')
 const path = require('path')
+const airlineCodes = require('airline-codes')
 const uglify = require('uglify-js')
+const spectra = require('spectra')
 
 const DIST_PATH = path.resolve(__dirname, 'dist', 'data.js')
 
@@ -64,7 +66,8 @@ function convertNumbers (arr) {
 
 function createData (arr) {
   return {
-    enplanedAndDeplaned: computeEnplanedAndDeplaned(arr)
+    enplanedAndDeplaned: computeEnplanedAndDeplaned(arr),
+    byAirline: computeByAirline(arr)
   }
 }
 
@@ -76,6 +79,36 @@ function computeEnplanedAndDeplaned (arr) {
     enplaned: computeDataFor(enplaned),
     deplaned: computeDataFor(deplaned)
   }
+}
+
+function computeByAirline (arr) {
+  const iataCodes = new Set(arr.map((e) => e['Operating Airline IATA Code']))
+  const airlines = [...iataCodes]
+    .map((a) => a.trim())
+    .filter((a) => a)
+    .map((code) => {
+      return {
+        name: getAirportName(code),
+        code
+      }
+    })
+
+  let result = airlines.map(({ name, code }) => {
+    const data = computeDataFor(arr.filter((e) => e['Operating Airline IATA Code'] === code))
+    const color = spectra.random().hex()
+    return { name, data, color }
+  })
+    .sort((a, b) => {
+      const aTotal = a.data.reduce((t, { y }) => t + y, 0)
+      const bTotal = b.data.reduce((t, { y }) => t + y, 0)
+      return bTotal - aTotal
+    })
+    .map((airline, index) => {
+      airline.hidden = index > 10
+      return airline
+    })
+
+  return result
 }
 
 function computeDataFor (arr) {
@@ -114,4 +147,13 @@ function writeData (data) {
       resolve()
     })
   })
+}
+
+function getAirportName (iata) {
+  const airport = airlineCodes.findWhere({ iata })
+  if (airport) {
+    return airport.get('name')
+  } else {
+    return iata
+  }
 }

@@ -7,6 +7,7 @@
     "test": "standard --fix"
   },
   "devDependencies": {
+    "airline-codes": "^1.0.2",
     "browserify": "^13.3.0",
     "connect": "^3.5.0",
     "csv-parse": "^1.1.9",
@@ -17,6 +18,7 @@
     "gulp-util": "^3.0.8",
     "mkdirp": "^0.5.1",
     "serve-static": "^1.11.1",
+    "spectra": "^0.2.3",
     "standard": "^8.6.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"

@@ -31,3 +31,28 @@ new Chart('coming-and-going', {
     }
   }
 })
+
+new Chart('by-airline', {
+  type: 'line',
+  data: {
+    datasets: data.byAirline.map(function (d) {
+      return {
+        label: d.name,
+        data: d.data,
+        fill: false,
+        hidden: d.hidden,
+        borderColor: d.color
+      }
+    })
+  },
+  options: {
+    scales: {
+      xAxes: [{
+        type: 'time',
+        time: {
+          unit: 'year'
+        }
+      }]
+    }
+  }
+})
