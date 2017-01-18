@@ -1,0 +1,7 @@
+# specific to this project
+/dist/
+/data.tsv
+
+# in general
+/node_modules/
+*.log
